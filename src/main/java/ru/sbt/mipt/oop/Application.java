@@ -12,9 +12,7 @@ public class Application {
 
     public static void main(String... args) throws IOException {
         // считываем состояние дома из файла
-        Gson gson = new Gson();
-        String json = new String(Files.readAllBytes(Paths.get("smart-home-1.js")));
-        SmartHome smartHome = gson.fromJson(json, SmartHome.class);
+        SmartHome smartHome = read();
         // начинаем цикл обработки событий
         SensorEvent event = getNextSensorEvent();
         while (event != null) {
@@ -64,6 +62,12 @@ public class Application {
             }
             event = getNextSensorEvent();
         }
+    }
+
+    private static SmartHome read() {
+        Gson gson = new Gson();
+        String json = new String(Files.readAllBytes(Paths.get("smart-home-1.js")));
+        return gson.fromJson(json, SmartHome.class);
     }
 
     private static void sendCommand(SensorCommand command) {

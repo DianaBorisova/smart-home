@@ -1,27 +1,27 @@
 package ru.sbt.mipt.oop;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static ru.sbt.mipt.oop.SensorEventType.*;
 
-public class Application {
+public class  Application {
 
     public static void main(String... args) throws IOException {
         // считываем состояние дома из файла
         SmartHome smartHome = HomeJsonFileReader.read();
         // начинаем цикл обработки событий
         SensorEvent event = getNextSensorEvent();
-        while (event != null) {
+        Collection<EventHandler> eventHandlers = new ArrayList<>(); //надо сделать конфигурацию
+        eventHandlers.add(new LightSensor());
+        eventHandlers.add(new DoorSensor());
+        eventHandlers.add(new HallLightSensor());
+                while (event != null) {
             System.out.println("Got event: " + event);
-            if (event.getType() == LIGHT_ON || event.getType() == LIGHT_OFF) {
-                // событие от источника света
-                LightSensor.processLightEvent(smartHome, event);
-            }
-            if (event.getType() == DOOR_OPEN || event.getType() == DOOR_CLOSED) {
-                // событие от двери
-                DoorSensor.processDoorEvent(smartHome, event);
-                LightSensor.turnOffLightsWHenHallDoorIsClosed(smartHome, event);
-            }
+            for (EventHandler eventHandler : eventHandlers) {
+                eventHandler.processEvent(smartHome, event);
+             }
             event = getNextSensorEvent();
         }
     }

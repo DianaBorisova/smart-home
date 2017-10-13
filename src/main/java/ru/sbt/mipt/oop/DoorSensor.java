@@ -10,8 +10,9 @@ import static ru.sbt.mipt.oop.SensorEventType.DOOR_OPEN;
 /**
  * Created by Диана on 13.10.2017.
  */
-public class DoorSensor {
-    public static void processDoorEvent(SmartHome smartHome, SensorEvent event) {
+public class DoorSensor implements EventHandler {
+    @Override
+    public void processEvent(SmartHome smartHome, SensorEvent event) {
         for (Room room : smartHome.getRooms()) {
             for (Door door : room.getDoors()) {
                 if (door.getId().equals(event.getObjectId())) {

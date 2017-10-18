@@ -8,7 +8,7 @@ import static ru.sbt.mipt.oop.SensorEventType.LIGHT_ON;
  */
 public class LightSensor implements EventHandler {
     @Override
-    public static void processEvent(SmartHome smartHome, SensorEvent event) {
+    public void processEvent(SmartHome smartHome, SensorEvent event) {
         for (Room room : smartHome.getRooms()) {
                 for (Door door : room.getDoors()) {
                     if (door.getId().equals(event.getObjectId())) {

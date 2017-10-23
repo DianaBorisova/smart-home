@@ -13,19 +13,22 @@ public class  Application {
         SmartHome smartHome = HomeJsonFileReader.read();
         // начинаем цикл обработки событий
         SensorEvent event = getNextSensorEvent();
-        Collection<EventHandler> eventHandlers = new ArrayList<>(); //надо сделать конфигурацию
-        eventHandlers.add(new LightSensor());
-        eventHandlers.add(new DoorSensor());
-        eventHandlers.add(new HallLightSensor());
-                while (event != null) {
+        Collection<EventHandler> eventHandlers = configureHandlers();
+        while (event != null) {
             System.out.println("Got event: " + event);
             for (EventHandler eventHandler : eventHandlers) {
-                eventHandler.processEvent(smartHome, event);
+                   eventHandler.processEvent(smartHome, event);
              }
             event = getNextSensorEvent();
         }
     }
-
+    private static Collection<EventHandler> configureHandlers () {
+        Collection<EventHandler> eventHandlers = new ArrayList<>();
+        eventHandlers.add(new Decorator(new LightSensor()));
+        eventHandlers.add(new Decorator(new DoorSensor()));
+        eventHandlers.add(new Decorator(new HallLightSensor()));
+        return eventHandlers;
+    }
     static void sendCommand(SensorCommand command) {
         System.out.println("Pretent we're sending command " + command);
     }

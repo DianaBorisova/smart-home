@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-/**
- * Created by user17 on 06.10.2017.
- */
+
 public class HomeJsonFileReader {
 	static SmartHome read() throws IOException {
 	    Gson gson = new Gson();

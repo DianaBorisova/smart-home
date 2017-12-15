@@ -1,26 +1,26 @@
 package ru.sbt.mipt.oop;
 
-import static ru.sbt.mipt.oop.SensorEventType.LIGHT_ON;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class HallLightSensor implements EventHandler {
     @Override
-    public void processEvent(SmartHome smartHome, SensorEvent event) {
-        for (Room room : smartHome.getRooms()) {
-            for (Door door : room.getDoors()) {
+    public void handleEvent(SensorEvent event) {
+        if (event.getType().equals(SensorEventType.DOOR_CLOSED)) {
+            ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("application.xml");
+            DoorIterator doorIterator = (DoorIterator) ctx.getBean("doorIterator");
+            while (doorIterator.hasNext()){
+                Door door = doorIterator.next();
                 if (door.getId().equals(event.getObjectId())) {
-                    if (event.getType().equals(SensorEventType.DOOR_CLOSED)) {
-                        door.setOpen(false);
-                        if (room.getName().equals("hall")) {
-                            for (Room homeRoom : smartHome.getRooms()) {
-                                for (Light light : homeRoom.getLights()) {
-                                    light.setOn(false);
-                                    SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                                    Application.sendCommand(command);
-                                }
+                    door.setOpen(false);
+                    if (doorIterator.getCurrentRoom().getName().equals("hall")) {
+                        SmartHome smartHome = (SmartHome) ctx.getBean("smartHome");
+                        for (Room homeRoom : smartHome.getRooms()) {
+                            for (Light light : homeRoom.getLights()) {
+                                light.setOn(false);
+                                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
+                                Application.sendCommand(command);
                             }
                         }
-                    } else if (event.getType().equals(SensorEventType.DOOR_OPEN)) {
-                        door.setOpen(true);
                     }
                 }
             }

@@ -1,30 +1,30 @@
 package ru.sbt.mipt.oop;
 
-import static ru.sbt.mipt.oop.SensorEventType.DOOR_OPEN;
-import static ru.sbt.mipt.oop.SensorEventType.LIGHT_ON;
 
-/**
- * Created by Диана on 13.10.2017.
- */
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 public class LightSensor implements EventHandler {
     @Override
-    public void processEvent(SmartHome smartHome, SensorEvent event) {
-        for (Room room : smartHome.getRooms()) {
-                for (Door door : room.getDoors()) {
-                    if (door.getId().equals(event.getObjectId())) {
-                        if (event.getType() != DOOR_OPEN) {
-                            if (room.getName().equals("hall")) {
-                                for (Room homeRoom : smartHome.getRooms()) {
-                                    for (Light light : homeRoom.getLights()) {
-                                        light.setOn(false);
-                                        SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                                        Application.sendCommand(command);
-                                    }
-                                }
-                            }
-                        }
+    public void handleEvent(SensorEvent event) {
+        if (event.getType() == SensorEventType.LIGHT_ON || event.getType() == SensorEventType.LIGHT_OFF){
+            ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("application.xml");
+            LightIterator lightIterator = (LightIterator) ctx.getBean("lightIterator");
+            while (lightIterator.hasNext()) {
+                Light light = lightIterator.next();
+                if (event.getObjectId().equals(light.getId())) {
+                    if (event.getType() == SensorEventType.LIGHT_ON) {
+                        light.setOn(true);
+                        SensorCommand command = new SensorCommand(CommandType.LIGHT_ON,
+                            light.getId());
+                        Application.sendCommand(command);
+                    } else {
+                        light.setOn(true);
+                        SensorCommand command = new SensorCommand(CommandType.LIGHT_ON,
+                            light.getId());
+                        Application.sendCommand(command);
                     }
                 }
+            }
         }
     }
 }

@@ -11,9 +11,9 @@ public class Decorator implements EventHandler {
     }
 
     @Override
-    public void processEvent(SmartHome smartHome, SensorEvent event){
+    public void handleEvent(SensorEvent event){
         long start = System.currentTimeMillis();
-        eventHandler.processEvent(smartHome, event);
+        eventHandler.handleEvent(event);
         long end = System.currentTimeMillis();
         System.out.println("Exec time =" + (end-start) + "ms");
     }

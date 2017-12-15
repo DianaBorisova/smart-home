@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <bean id="lightSensor" class="ru.sbt.mipt.oop.LightSensor"/>
+  <bean id="doorSensor" class="ru.sbt.mipt.oop.DoorSensor"/>
+  <bean id="alarmSystemSensor" class="ru.sbt.mipt.oop.AlarmSystemSensor"/>
+  <bean id="hallLightSensor" class="ru.sbt.mipt.oop.HallLightSensor"/>
+
+  <bean id="smartHome" class="ru.sbt.mipt.oop.HomeJsonFileReader" factory-method="read" />
+
+  <bean id="sensorEventObserver" class="ru.sbt.mipt.oop.SensorEventObserver">
+    <constructor-arg index="0" ref="smartHome"/>
+    <property name="handlers">
+      <list>
+        <ref bean="hallLightSensor"/>
+        <ref bean="lightSensor"/>
+        <ref bean="doorSensor"/>
+        <ref bean="alarmSystemSensor"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saverXML" class="ru.sbt.mipt.oop.SaverXML">
+    <constructor-arg index="0" ref="smartHome"/>
+  </bean>
+
+  <bean id="lightIterator" class="ru.sbt.mipt.oop.LightIterator">
+    <constructor-arg index="0" ref="smartHome"/>
+  </bean>
+  <bean id="doorIterator" class="ru.sbt.mipt.oop.DoorIterator">
+    <constructor-arg index="0" ref="smartHome"/>
+  </bean>
+  <bean id="alarmIterator" class="ru.sbt.mipt.oop.AlarmIterator">
+    <constructor-arg index="0" ref="smartHome"/>
+  </bean>
+
+</beans>

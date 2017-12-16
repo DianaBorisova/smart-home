@@ -3,7 +3,7 @@ package ru.sbt.mipt.oop;
 /**
  * Created by Диана on 17.11.2017.
  */
-public class AlarmSystem implements AlarmSystemStateInterface {
+public class AlarmSystem implements AlarmSystemStateInterface, Actionable {
 
     private final String id;
 
@@ -35,6 +35,11 @@ public class AlarmSystem implements AlarmSystemStateInterface {
 
     void setAlarmSystemState(AlarmSystemStateInterface alarmSystemStateInterface) {
         this.alarmSystemStateInterface = alarmSystemStateInterface;
+    }
+
+    @Override
+    public void executeAction(Action action) {
+        action.execute(this);
     }
 }
 
